@@ -1,0 +1,32 @@
+middlewares auth.js
+
+restrictToLoggedinUserOnly and checkAuth : code redendency removed 
+and added authorization Roles check = ADMIN, NORMAL
+
+in index.js
+app.use(checkAuthentication);
+
+in models
+userModel: added field role
+
+in index.js
+app.use(checkAuthentication)
+removed baki functions/middlewares
+
+in staticRouter.js
+const { restrictTo } = require('../middlewares/auth');
+staticRouter.get('/', restrictTo(["NORMAL"]), async(req, res)=>{
+    if(!req.user)
+        return res.redirect("/login");
+
+    const allUrls = await urlModel.find({createdby: req.user._id});
+    return res.render("home", {
+        urls : allUrls,
+    });
+});
+
+roles: NORMAL and ADMIN
+
+http://localhost:8002/admin/urls
+will list all urls
+
